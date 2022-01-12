@@ -1,9 +1,6 @@
 package com.example.projektpraktyczny.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,6 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "car")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 

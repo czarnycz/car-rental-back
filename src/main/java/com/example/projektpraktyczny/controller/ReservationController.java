@@ -1,6 +1,9 @@
 package com.example.projektpraktyczny.controller;
 
+import com.example.projektpraktyczny.model.Car;
 import com.example.projektpraktyczny.model.Reservation;
+import com.example.projektpraktyczny.model.dto.CarDto;
+import com.example.projektpraktyczny.model.dto.CreateReservationDto;
 import com.example.projektpraktyczny.service.JpaReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +25,7 @@ public class ReservationController {
 
     @CrossOrigin()
     @PostMapping("")
-    public void add(@RequestBody Reservation reservation){
+    public void add(@RequestBody CreateReservationDto reservation){
         jpaReservationService.add(reservation);
     }
 
@@ -38,9 +41,16 @@ public class ReservationController {
         return jpaReservationService.findClientReservation(clientId);
     }
 
-    @PostMapping("/attendee/{clientId}/{reservationID}")
+    @PostMapping("/selectCar/{clientId}/{reservationID}")
     public void addClientToReservation(@PathVariable  Long clientId, @PathVariable Long reservationID){
         jpaReservationService.addClientToReservation(clientId, reservationID);
+    }
+
+//        /reservations/selectCar/3
+    @PostMapping("/selectCar/{reservationID}")
+    public void addCarToReservation(@PathVariable Long reservationID, @RequestBody CarDto car){
+        // Spodziewamy się że obiekt car będzie zawierał 3 pola: mark, model, type
+        jpaReservationService.addCarToReservation(reservationID, car);
     }
 
 

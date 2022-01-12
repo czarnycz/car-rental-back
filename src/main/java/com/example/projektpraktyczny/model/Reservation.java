@@ -1,6 +1,7 @@
 package com.example.projektpraktyczny.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Reservation {
 
     @Id
@@ -22,10 +24,10 @@ public class Reservation {
     private double price;
     private boolean cancelled;
 
-    @OneToOne
+    @OneToOne(mappedBy = "reservation")
     private Car car;
 
-    @OneToOne
+    @OneToOne(mappedBy = "")
     private Client client;
 
     @OneToOne
