@@ -2,18 +2,17 @@ package com.example.projektpraktyczny.model.dto;
 
 import com.example.projektpraktyczny.model.CarBodyType;
 import com.example.projektpraktyczny.model.Reservation;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @ToString
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarDto {
+    private Long id;
 
     private String mark;
 

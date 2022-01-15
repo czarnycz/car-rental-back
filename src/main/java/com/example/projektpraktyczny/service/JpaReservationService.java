@@ -1,21 +1,26 @@
 package com.example.projektpraktyczny.service;
 
 import com.example.projektpraktyczny.model.Car;
+import com.example.projektpraktyczny.model.CarBodyType;
 import com.example.projektpraktyczny.model.Client;
 import com.example.projektpraktyczny.model.Reservation;
 import com.example.projektpraktyczny.model.dto.CarDto;
 import com.example.projektpraktyczny.model.dto.CreateReservationDto;
+import com.example.projektpraktyczny.model.dto.ReservationDetailsDto;
+import com.example.projektpraktyczny.model.dto.ReservationDto;
 import com.example.projektpraktyczny.repository1.CarRepository;
 import com.example.projektpraktyczny.repository1.ClientRepository;
 import com.example.projektpraktyczny.repository1.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JpaReservationService implements ReservationService{
@@ -25,19 +30,28 @@ public class JpaReservationService implements ReservationService{
     final ClientRepository clientRepository;
 
     @Override
-    public void add(CreateReservationDto reservation) {
+    public Long add(CreateReservationDto reservation) {
         Reservation createdReservation = Reservation.builder()
                 .dateOfReservation(LocalDate.now())
                 .startOfReservation(reservation.getStartOfReservation())
                 .endOfReservation(reservation.getEndOfReservation())
                 .build();
 
-        reservationRepository.save(createdReservation);
+        return reservationRepository.save(createdReservation).getId();
     }
 
     @Override
-    public List<Reservation> findAll() {
-        return reservationRepository.findAll();
+    public List<ReservationDto> findAll() {
+        return reservationRepository.findAll().stream()
+                .map(reservation -> {
+                    return ReservationDto.builder()
+                            .startOfReservation(reservation.getStartOfReservation())
+                            .endOfReservation(reservation.getEndOfReservation())
+                            .cancelled(reservation.isCancelled())
+                            .type(reservation.getCar()!= null ? reservation.getCar().getType(): CarBodyType.DID_NOT_SET)
+                            .id(reservation.getId())
+                            .build();
+                }).collect(Collectors.toList());
     }
 
     @Override
@@ -49,6 +63,25 @@ public class JpaReservationService implements ReservationService{
             return byClient;
         }
         throw new EntityNotFoundException("Client with ID: " + clientId + " not found");
+    }
+
+    @Override
+    public ReservationDetailsDto findReservation(Long reservationId) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+        if(optionalReservation.isPresent()){
+            Reservation reservation = optionalReservation.get();
+            return ReservationDetailsDto.builder()
+                    .id(reservation.getId())
+                    .dateOfReservation(reservation.getDateOfReservation())
+                    .startOfReservation(reservation.getStartOfReservation())
+                    .endOfReservation(reservation.getEndOfReservation())
+                    .mark(reservation.getCar()!= null ? reservation.getCar().getMark() : "Didn't Set")
+                    .model(reservation.getCar()!= null ? reservation.getCar().getModel() : "Didn't Set")
+                    .type(reservation.getCar()!= null ? reservation.getCar().getType(): CarBodyType.DID_NOT_SET)
+                    .cancelled(reservation.isCancelled())
+                    .build();
+        }
+        throw new EntityNotFoundException("Reservation with ID: " + reservationId + " not found");
     }
 
     @Override
@@ -80,6 +113,8 @@ public class JpaReservationService implements ReservationService{
                 .build();
 
         carRepository.save(createdCar);
+
+
     }
 
     @Override
@@ -105,4 +140,5 @@ public class JpaReservationService implements ReservationService{
         reservation.setClient(client);
         reservationRepository.save(reservation);
     }
+
 }

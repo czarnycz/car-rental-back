@@ -21,7 +21,7 @@ public class Reservation {
     private LocalDate dateOfReservation;
     private LocalDate startOfReservation;
     private LocalDate endOfReservation;
-    private double price;
+    private Double price;
     private boolean cancelled;
 
     @OneToOne(mappedBy = "reservation")

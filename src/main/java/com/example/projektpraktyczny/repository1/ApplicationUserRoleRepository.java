@@ -1,6 +1,6 @@
 package com.example.projektpraktyczny.repository1;
 
-import com.example.projektpraktyczny.model.ApplicationUser;
+
 import com.example.projektpraktyczny.model.ApplicationUserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,10 +1,15 @@
 package com.example.projektpraktyczny.service;
 
 import com.example.projektpraktyczny.model.Car;
+import com.example.projektpraktyczny.model.Reservation;
+import com.example.projektpraktyczny.model.dto.CarDto;
 import com.example.projektpraktyczny.repository1.CarRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class JpaCarService implements CarService{
     final CarRepository carRepository;
@@ -14,13 +19,26 @@ public class JpaCarService implements CarService{
     }
 
     @Override
-    public List<Car> findAll() {
-        return carRepository.findAll();
+    public List<CarDto> findAll() {
+        return carRepository.findAll().stream().map(car -> {
+            return CarDto.builder()
+                    .id(car.getId())
+                    .type(car.getType())
+                    .model(car.getModel())
+                    .mark(car.getMark())
+                    .build();
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public void add(Car car) {
-        carRepository.save(car);
+    public void add(CarDto car) {
+        Car createdCar = Car.builder()
+                .mark(car.getMark())
+                .model(car.getModel())
+                .type(car.getType())
+                .build();
+
+        carRepository.save(createdCar);
     }
 
     @Override

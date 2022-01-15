@@ -23,6 +23,7 @@ public class Car {
 
     private String model;
 
+    @Enumerated(EnumType.STRING)
     private CarBodyType type;
 
 

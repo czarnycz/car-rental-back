@@ -1,9 +1,10 @@
 package com.example.projektpraktyczny.controller;
 
-import com.example.projektpraktyczny.model.Car;
 import com.example.projektpraktyczny.model.Reservation;
 import com.example.projektpraktyczny.model.dto.CarDto;
 import com.example.projektpraktyczny.model.dto.CreateReservationDto;
+import com.example.projektpraktyczny.model.dto.ReservationDetailsDto;
+import com.example.projektpraktyczny.model.dto.ReservationDto;
 import com.example.projektpraktyczny.service.JpaReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,26 +20,26 @@ public class ReservationController {
 
     @CrossOrigin()
     @GetMapping("")
-    public List<Reservation> get(){
+    public List<ReservationDto> get(){
         return jpaReservationService.findAll();
     }
 
     @CrossOrigin()
     @PostMapping("")
-    public void add(@RequestBody CreateReservationDto reservation){
-        jpaReservationService.add(reservation);
+    public Long add(@RequestBody CreateReservationDto reservation){
+        return jpaReservationService.add(reservation);
     }
 
     @CrossOrigin()
-    @PostMapping("/{id}")
+    @PostMapping("/cancel/{id}")
     public void cancel(@PathVariable Long id){
         jpaReservationService.cancel(id);
     }
 
     @CrossOrigin()
-    @GetMapping("/{clientId}")
-    public List<Reservation> findClientReservation(@PathVariable Long clientId){
-        return jpaReservationService.findClientReservation(clientId);
+    @GetMapping("/{reservationId}")
+    public ReservationDetailsDto findReservation(@PathVariable Long reservationId){
+        return jpaReservationService.findReservation(reservationId);
     }
 
     @PostMapping("/selectCar/{clientId}/{reservationID}")
@@ -52,6 +53,5 @@ public class ReservationController {
         // Spodziewamy się że obiekt car będzie zawierał 3 pola: mark, model, type
         jpaReservationService.addCarToReservation(reservationID, car);
     }
-
 
 }
