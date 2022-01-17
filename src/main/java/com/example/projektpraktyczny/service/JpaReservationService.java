@@ -20,10 +20,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JpaReservationService implements ReservationService{
+public class JpaReservationService implements ReservationService {
 
     final ReservationRepository reservationRepository;
     final CarRepository carRepository;
@@ -48,7 +49,7 @@ public class JpaReservationService implements ReservationService{
                             .startOfReservation(reservation.getStartOfReservation())
                             .endOfReservation(reservation.getEndOfReservation())
                             .cancelled(reservation.isCancelled())
-                            .type(reservation.getCar()!= null ? reservation.getCar().getType(): CarBodyType.DID_NOT_SET)
+                            .type(reservation.getCar() != null ? reservation.getCar().getType() : CarBodyType.DID_NOT_SET)
                             .id(reservation.getId())
                             .build();
                 }).collect(Collectors.toList());
@@ -57,7 +58,7 @@ public class JpaReservationService implements ReservationService{
     @Override
     public List<Reservation> findClientReservation(Long clientId) {
         Optional<Client> clientOptional = clientRepository.findById(clientId);
-        if(clientOptional.isPresent()){
+        if (clientOptional.isPresent()) {
             Client client = clientOptional.get();
             List<Reservation> byClient = reservationRepository.findByClient(client);
             return byClient;
@@ -68,16 +69,16 @@ public class JpaReservationService implements ReservationService{
     @Override
     public ReservationDetailsDto findReservation(Long reservationId) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
-        if(optionalReservation.isPresent()){
+        if (optionalReservation.isPresent()) {
             Reservation reservation = optionalReservation.get();
             return ReservationDetailsDto.builder()
                     .id(reservation.getId())
                     .dateOfReservation(reservation.getDateOfReservation())
                     .startOfReservation(reservation.getStartOfReservation())
                     .endOfReservation(reservation.getEndOfReservation())
-                    .mark(reservation.getCar()!= null ? reservation.getCar().getMark() : "Didn't Set")
-                    .model(reservation.getCar()!= null ? reservation.getCar().getModel() : "Didn't Set")
-                    .type(reservation.getCar()!= null ? reservation.getCar().getType(): CarBodyType.DID_NOT_SET)
+                    .mark(reservation.getCar() != null ? reservation.getCar().getMark() : "Didn't Set")
+                    .model(reservation.getCar() != null ? reservation.getCar().getModel() : "Didn't Set")
+                    .type(reservation.getCar() != null ? reservation.getCar().getType() : CarBodyType.DID_NOT_SET)
                     .cancelled(reservation.isCancelled())
                     .build();
         }
@@ -87,7 +88,7 @@ public class JpaReservationService implements ReservationService{
     @Override
     public void cancel(Long id) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(id);
-        if(optionalReservation.isPresent()){
+        if (optionalReservation.isPresent()) {
             Reservation reservation = optionalReservation.get();
             reservation.setCancelled(true);
             reservationRepository.save(reservation);
@@ -98,23 +99,28 @@ public class JpaReservationService implements ReservationService{
     public void addCarToReservation(Long reservationID, CarDto car) {
         Reservation reservation = null;
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationID);
-        if(reservationOptional.isPresent()){
+        if (reservationOptional.isPresent()) {
             reservation = reservationOptional.get();
 
-        }else{
+        } else {
             throw new EntityNotFoundException("Reservation with ID: " + reservationID + " not found");
         }
 
-        Car createdCar = Car.builder()
-                .reservation(reservation)
-                .model(car.getModel())
-                .mark(car.getModel())
-                .type(car.getType())
-                .build();
+        if (reservation.getCar() != null) {
+            reservation.getCar().setMark(car.getMark());
+            reservation.getCar().setModel(car.getModel());
+            reservation.getCar().setType(car.getType());
+            carRepository.save(reservation.getCar());
+        } else {
+            Car createdCar = Car.builder()
+                    .reservation(reservation)
+                    .model(car.getModel())
+                    .mark(car.getModel())
+                    .type(car.getType())
+                    .build();
 
-        carRepository.save(createdCar);
-
-
+            carRepository.save(createdCar);
+        }
     }
 
     @Override
@@ -124,17 +130,17 @@ public class JpaReservationService implements ReservationService{
         Reservation reservation = null;
 
         Optional<Client> clientOptional = clientRepository.findById(clientId);
-        if(clientOptional.isPresent()){
-             client = clientOptional.get();
+        if (clientOptional.isPresent()) {
+            client = clientOptional.get();
 
-        }else{
+        } else {
             throw new EntityNotFoundException("Client with ID: " + clientId + " not found");
         }
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationID);
-        if(reservationOptional.isPresent()){
+        if (reservationOptional.isPresent()) {
             reservation = reservationOptional.get();
 
-        }else{
+        } else {
             throw new EntityNotFoundException("Reservation with ID: " + reservationID + " not found");
         }
         reservation.setClient(client);

@@ -1,26 +1,30 @@
 package com.example.projektpraktyczny.controller;
 
 import com.example.projektpraktyczny.model.Reservation;
-import com.example.projektpraktyczny.model.dto.CarDto;
-import com.example.projektpraktyczny.model.dto.CreateReservationDto;
-import com.example.projektpraktyczny.model.dto.ReservationDetailsDto;
-import com.example.projektpraktyczny.model.dto.ReservationDto;
+import com.example.projektpraktyczny.model.dto.*;
+import com.example.projektpraktyczny.service.ApplicationUserService;
 import com.example.projektpraktyczny.service.JpaReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
-@CrossOrigin()
+@Slf4j
 @RestController
 @RequestMapping("/reservations")
 @RequiredArgsConstructor
 public class ReservationController {
     private final JpaReservationService jpaReservationService;
+    private final ApplicationUserService applicationUserService;
 
     @CrossOrigin()
     @GetMapping("")
-    public List<ReservationDto> get(){
+    public List<ReservationDto> get(Principal principal){
+        Optional<Long> userIdOptional = applicationUserService.getLoggedInUserId(principal);
+        log.info("Zalogowani? : " + userIdOptional);
         return jpaReservationService.findAll();
     }
 
@@ -47,11 +51,11 @@ public class ReservationController {
         jpaReservationService.addClientToReservation(clientId, reservationID);
     }
 
-//        /reservations/selectCar/3
     @PostMapping("/selectCar/{reservationID}")
     public void addCarToReservation(@PathVariable Long reservationID, @RequestBody CarDto car){
         // Spodziewamy się że obiekt car będzie zawierał 3 pola: mark, model, type
         jpaReservationService.addCarToReservation(reservationID, car);
     }
+
 
 }
