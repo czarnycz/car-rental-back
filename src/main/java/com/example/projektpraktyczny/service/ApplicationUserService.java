@@ -48,6 +48,7 @@ public class ApplicationUserService implements UserDetailsService {
         }
         throw new UsernameNotFoundException("User with username: " + username + " was not found.");
     }
+
     public Optional<Long> getLoggedInUserId(Principal principal){
         if (principal != null){
             log.info("Jesteśmy zalogowani, informacja o użytkowniku: " + principal);
@@ -61,6 +62,7 @@ public class ApplicationUserService implements UserDetailsService {
         }
         return Optional.empty();
     }
+
     public boolean isAdmin(Principal principal){
         if (principal != null){
             log.info("Jesteśmy zalogowani, informacja o użytkowniku: " + principal);

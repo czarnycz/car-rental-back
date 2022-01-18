@@ -22,6 +22,8 @@ public class ReservationDetailsDto {
     private CarBodyType type;
     private Double price;
     private boolean cancelled;
+    private boolean rented;
+    private boolean returned;
 
 
 }

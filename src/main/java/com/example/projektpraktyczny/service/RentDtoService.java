@@ -1,8 +1,10 @@
 package com.example.projektpraktyczny.service;
 
+import com.example.projektpraktyczny.model.ApplicationUser;
 import com.example.projektpraktyczny.model.Rent;
 import com.example.projektpraktyczny.model.Reservation;
 import com.example.projektpraktyczny.model.dto.RentDto;
+import com.example.projektpraktyczny.repository1.ApplicationUserRepository;
 import com.example.projektpraktyczny.repository1.RentDtoRepository;
 import com.example.projektpraktyczny.repository1.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +19,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RentDtoService {
     final ReservationRepository reservationRepository;
+    final ApplicationUserRepository applicationUserRepository;
     final RentDtoRepository rentRepository;
 
-    public void addRentToReservation(Long reservationID, RentDto rent) {
+    public void addRentToReservation(Long workerId, Long reservationID, RentDto rent) {
+        ApplicationUser worker = null;
         Reservation reservation = null;
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationID);
         if (reservationOptional.isPresent()) {
@@ -29,17 +33,27 @@ public class RentDtoService {
             throw new EntityNotFoundException("Reservation with ID: " + reservationID + " not found");
         }
 
+        Optional<ApplicationUser> applicationUserOptional = applicationUserRepository.findById(workerId);
+        if (applicationUserOptional.isPresent()) {
+            worker = applicationUserOptional.get();
+
+        } else {
+            throw new EntityNotFoundException("Worker with ID: " + reservationID + " not found");
+        }
+
         if (reservation.getRent() != null) {
+            reservation.getRent().setReservation(reservation);
             reservation.getRent().setDateOfRent(rent.getDateOfRent());
             reservation.getRent().setComments(rent.getComments());
-            reservation.getRent().setWorker(rent.getWorker());
+            reservation.getRent().setWorker(worker);
 
             rentRepository.save(reservation.getRent());
         } else {
             Rent createdRent = Rent.builder()
+                    .reservation(reservation)
                     .dateOfRent(rent.getDateOfRent())
                     .comments(rent.getComments())
-                    .worker(rent.getWorker())
+                    .worker(worker)
                     .build();
 
             rentRepository.save(createdRent);

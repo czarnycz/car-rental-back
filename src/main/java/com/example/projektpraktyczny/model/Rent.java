@@ -1,9 +1,6 @@
 package com.example.projektpraktyczny.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import javax.persistence.*;
@@ -21,8 +18,14 @@ public class Rent {
     private Long id;
     private LocalDate dateOfRent;
     private String comments;
-    private String worker;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToOne
+    private ApplicationUser worker;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne
     private Reservation reservation;
 

@@ -13,5 +13,5 @@ import java.time.LocalDate;
 public class RentDto {
     private LocalDate dateOfRent;
     private String comments;
-    private String worker;
+
 }

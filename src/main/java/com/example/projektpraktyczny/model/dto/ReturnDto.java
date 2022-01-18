@@ -15,5 +15,5 @@ public class ReturnDto {
     private LocalDate dateOfReturn;
     private double additionalPayment;
     private String comments;
-    private String worker;
+
 }

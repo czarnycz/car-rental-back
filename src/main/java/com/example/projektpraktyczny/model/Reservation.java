@@ -1,9 +1,6 @@
 package com.example.projektpraktyczny.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -24,18 +21,23 @@ public class Reservation {
     private Double price;
     private boolean cancelled;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne(mappedBy = "reservation")
     private Car car;
 
-    @OneToOne(mappedBy = "")
-    private Client client;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToOne()
+    private ApplicationUser client;
 
-    @OneToOne
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToOne(mappedBy = "reservation")
     private Rent rent;
 
-    @OneToOne
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToOne(mappedBy = "reservation")
     private CarReturn aReturn;
-
-    @OneToOne
-    private Worker worker;
 }

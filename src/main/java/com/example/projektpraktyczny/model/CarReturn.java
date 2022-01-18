@@ -1,14 +1,13 @@
 package com.example.projektpraktyczny.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,4 +21,9 @@ public class CarReturn {
 
     @OneToOne
     private Reservation reservation;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToOne
+    private ApplicationUser worker;
 }

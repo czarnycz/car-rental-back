@@ -25,6 +25,29 @@ public class ApplicationUser implements UserDetails {
     private String username;
     private String password;
 
+    private String name;
+
+    private String lastName;
+
+    private String email;
+
+    private String address;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(mappedBy = "client")
+    private Set<Reservation> reservations;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(mappedBy = "worker")
+    private Set<Rent> rents;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(mappedBy = "worker")
+    private Set<CarReturn> returns;
+
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
