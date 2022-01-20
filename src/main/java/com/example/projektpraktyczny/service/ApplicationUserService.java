@@ -107,8 +107,12 @@ public class ApplicationUserService implements UserDetailsService {
         }
 
         ApplicationUser user = ApplicationUser.builder()
+                .name(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .username(dto.getUsername())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
+                .email(dto.getEmail())
+                .address(dto.getAddress())
                 .roles(roles)
                 .build();
 

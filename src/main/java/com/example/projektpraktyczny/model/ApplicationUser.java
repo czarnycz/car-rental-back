@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-// Nie nazywa? "User" poniewa? mysql ma t? tabel? zarezerwowan?
 public class ApplicationUser implements UserDetails {
     @Id
     @GeneratedValue
