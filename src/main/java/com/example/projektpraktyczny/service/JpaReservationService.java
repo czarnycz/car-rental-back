@@ -16,10 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Slf4j
 @Service
@@ -29,6 +33,7 @@ public class JpaReservationService implements ReservationService {
     final ApplicationUserRepository applicationUserRepository;
     final ReservationRepository reservationRepository;
     final CarRepository carRepository;
+    final PriceCalculator priceCalculator;
 
     @Override
     public Long add(CreateReservationDto reservation, Long clientId) {
@@ -60,6 +65,7 @@ public class JpaReservationService implements ReservationService {
                         .cancelled(reservation.isCancelled())
                         .type(reservation.getCar() != null ? reservation.getCar().getType() : CarBodyType.DID_NOT_SET)
                         .id(reservation.getId())
+                        .price(reservation.getPrice())
                         .build()).collect(Collectors.toList());
     }
 
@@ -75,6 +81,7 @@ public class JpaReservationService implements ReservationService {
                             .cancelled(reservation.isCancelled())
                             .type(reservation.getCar() != null ? reservation.getCar().getType() : CarBodyType.DID_NOT_SET)
                             .id(reservation.getId())
+                            .price(reservation.getPrice())
                             .build()).collect(Collectors.toList());
         }
         throw new EntityNotFoundException("Client with ID: " + clientId + " not found");
@@ -96,6 +103,7 @@ public class JpaReservationService implements ReservationService {
                     .cancelled(reservation.isCancelled())
                     .rented(reservation.getRent() != null)
                     .returned(reservation.getAReturn() != null)
+                    .price(reservation.getPrice())
                     .build();
         }
         throw new EntityNotFoundException("Reservation with ID: " + reservationId + " not found");
@@ -131,12 +139,15 @@ public class JpaReservationService implements ReservationService {
             Car createdCar = Car.builder()
                     .reservation(reservation)
                     .model(car.getModel())
-                    .mark(car.getModel())
+                    .mark(car.getMark())
                     .type(car.getType())
                     .build();
 
             carRepository.save(createdCar);
         }
+
+        reservation.setPrice(priceCalculator.calculatePrice(reservationID));
+        reservationRepository.save(reservation);
     }
 
     @Override
@@ -161,7 +172,9 @@ public class JpaReservationService implements ReservationService {
             throw new EntityNotFoundException("Reservation with ID: " + reservationID + " not found");
         }
         reservation.setClient(client);
+
         reservationRepository.save(reservation);
     }
+
 
 }

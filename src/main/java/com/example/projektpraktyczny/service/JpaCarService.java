@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class JpaCarService implements CarService{
+public class JpaCarService implements CarService {
     final CarRepository carRepository;
 
     public JpaCarService(CarRepository carRepository) {
@@ -20,21 +20,20 @@ public class JpaCarService implements CarService{
 
     @Override
     public List<CarDto> findAll() {
-        return carRepository.findAll().stream().map(car -> {
-            return CarDto.builder()
-                    .id(car.getId())
-                    .type(car.getType())
-                    .model(car.getModel())
-                    .mark(car.getMark())
-                    .build();
-        }).collect(Collectors.toList());
+        return carRepository.findAll().stream().map(car -> CarDto.builder()
+                        .id(car.getId())
+                        .model(car.getModel())
+                        .mark(car.getMark())
+                        .type(car.getType())
+                        .build())
+                        .collect(Collectors.toList());
     }
 
     @Override
     public void add(CarDto car) {
         Car createdCar = Car.builder()
-                .mark(car.getMark())
                 .model(car.getModel())
+                .mark(car.getMark())
                 .type(car.getType())
                 .build();
 

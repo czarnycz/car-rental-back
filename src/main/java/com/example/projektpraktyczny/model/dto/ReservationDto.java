@@ -17,5 +17,6 @@ public class ReservationDto {
     private LocalDate startOfReservation;
     private LocalDate endOfReservation;
     private boolean cancelled;
+    private Double price;
     private CarBodyType type;
 }

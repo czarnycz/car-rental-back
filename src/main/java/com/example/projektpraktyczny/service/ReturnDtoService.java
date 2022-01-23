@@ -24,6 +24,7 @@ public class ReturnDtoService {
     final ReservationRepository reservationRepository;
     final ReturnRepository returnRepository;
     final ApplicationUserRepository applicationUserRepository;
+    final PriceCalculator priceCalculator;
 
     public void addReturnToReservation(Long workerId,Long reservationID, ReturnDto returnDto) {
         ApplicationUser worker = null;
@@ -64,5 +65,8 @@ public class ReturnDtoService {
 
             returnRepository.save(createdReturn);
         }
+
+        reservation.setPrice(priceCalculator.calculatePrice(reservationID));
+        reservationRepository.save(reservation);
     }
 }

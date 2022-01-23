@@ -21,6 +21,7 @@ public class RentDtoService {
     final ReservationRepository reservationRepository;
     final ApplicationUserRepository applicationUserRepository;
     final RentDtoRepository rentRepository;
+    final PriceCalculator priceCalculator;
 
     public void addRentToReservation(Long workerId, Long reservationID, RentDto rent) {
         ApplicationUser worker = null;
@@ -58,5 +59,8 @@ public class RentDtoService {
 
             rentRepository.save(createdRent);
         }
+
+        reservation.setPrice(priceCalculator.calculatePrice(reservationID));
+        reservationRepository.save(reservation);
     }
 }
