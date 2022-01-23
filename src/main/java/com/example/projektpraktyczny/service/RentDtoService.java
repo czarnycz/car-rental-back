@@ -56,11 +56,12 @@ public class RentDtoService {
                     .comments(rent.getComments())
                     .worker(worker)
                     .build();
+            reservation.setRent(createdRent);
 
             rentRepository.save(createdRent);
         }
 
-        reservation.setPrice(priceCalculator.calculatePrice(reservationID));
+        reservation.setPrice(priceCalculator.calculatePrice(reservation));
         reservationRepository.save(reservation);
     }
 }

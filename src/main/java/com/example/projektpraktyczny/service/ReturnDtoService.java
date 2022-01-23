@@ -62,11 +62,12 @@ public class ReturnDtoService {
                     .additionalPayment(returnDto.getAdditionalPayment())
                     .comments(returnDto.getComments())
                     .build();
+            reservation.setAReturn(createdReturn);
 
             returnRepository.save(createdReturn);
         }
 
-        reservation.setPrice(priceCalculator.calculatePrice(reservationID));
+        reservation.setPrice(priceCalculator.calculatePrice(reservation));
         reservationRepository.save(reservation);
     }
 }

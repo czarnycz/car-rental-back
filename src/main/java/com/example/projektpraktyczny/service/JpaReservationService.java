@@ -142,11 +142,12 @@ public class JpaReservationService implements ReservationService {
                     .mark(car.getMark())
                     .type(car.getType())
                     .build();
+            reservation.setCar(createdCar);
 
             carRepository.save(createdCar);
         }
 
-        reservation.setPrice(priceCalculator.calculatePrice(reservationID));
+        reservation.setPrice(priceCalculator.calculatePrice(reservation));
         reservationRepository.save(reservation);
     }
 
