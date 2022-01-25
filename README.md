@@ -10,6 +10,33 @@ additional fee, for example for damage to the car.
 
 To set up a database, go to the application.properties in the folder resources.
 
-# Application Dependencies
+# Functionality
 
-Frontend depends on the backend and backend depends on the frontend.
+Following functionalities are available:
+
+- add new reservation
+- cancel reservation
+- manage car
+- rent car
+- return car
+
+# Technology
+
+Project consists of separately developed frontend and backend applications.
+
+BACKEND
+- Java 11
+- Spring Web
+- Spring Data
+- Spring Security
+- SQL Database
+- Lombok
+
+FRONTEND
+- React JS
+- Axios
+- Material UI
+
+# Author
+
+Gluszko Bartlomiej email: gluszko.b@gmail.com

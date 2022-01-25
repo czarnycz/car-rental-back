@@ -1,9 +1,6 @@
 package com.example.projektpraktyczny.service;
 
-import com.example.projektpraktyczny.model.ApplicationUser;
-import com.example.projektpraktyczny.model.Car;
-import com.example.projektpraktyczny.model.CarBodyType;
-import com.example.projektpraktyczny.model.Reservation;
+import com.example.projektpraktyczny.model.*;
 import com.example.projektpraktyczny.model.dto.CarDto;
 import com.example.projektpraktyczny.model.dto.CreateReservationDto;
 import com.example.projektpraktyczny.model.dto.ReservationDetailsDto;
@@ -64,6 +61,8 @@ public class JpaReservationService implements ReservationService {
                         .endOfReservation(reservation.getEndOfReservation())
                         .cancelled(reservation.isCancelled())
                         .type(reservation.getCar() != null ? reservation.getCar().getType() : CarBodyType.DID_NOT_SET)
+                        .mark(reservation.getCar() != null ? reservation.getCar().getMark() : CarMark.DID_NOT_SET)
+                        .model(reservation.getCar() != null ? reservation.getCar().getModel() : CarModel.DID_NOT_SET)
                         .id(reservation.getId())
                         .price(reservation.getPrice())
                         .build()).collect(Collectors.toList());
@@ -97,9 +96,9 @@ public class JpaReservationService implements ReservationService {
                     .dateOfReservation(reservation.getDateOfReservation())
                     .startOfReservation(reservation.getStartOfReservation())
                     .endOfReservation(reservation.getEndOfReservation())
-                    .mark(reservation.getCar() != null ? reservation.getCar().getMark() : "Didn't Set")
-                    .model(reservation.getCar() != null ? reservation.getCar().getModel() : "Didn't Set")
                     .type(reservation.getCar() != null ? reservation.getCar().getType() : CarBodyType.DID_NOT_SET)
+                    .mark(reservation.getCar() != null ? reservation.getCar().getMark() : CarMark.DID_NOT_SET)
+                    .model(reservation.getCar() != null ? reservation.getCar().getModel() : CarModel.DID_NOT_SET)
                     .cancelled(reservation.isCancelled())
                     .rented(reservation.getRent() != null)
                     .returned(reservation.getAReturn() != null)
@@ -131,16 +130,16 @@ public class JpaReservationService implements ReservationService {
         }
 
         if (reservation.getCar() != null) {
+            reservation.getCar().setType(car.getType());
             reservation.getCar().setMark(car.getMark());
             reservation.getCar().setModel(car.getModel());
-            reservation.getCar().setType(car.getType());
             carRepository.save(reservation.getCar());
         } else {
             Car createdCar = Car.builder()
                     .reservation(reservation)
+                    .type(car.getType())
                     .model(car.getModel())
                     .mark(car.getMark())
-                    .type(car.getType())
                     .build();
             reservation.setCar(createdCar);
 

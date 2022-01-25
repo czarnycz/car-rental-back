@@ -19,9 +19,11 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String mark;
+    @Enumerated(EnumType.STRING)
+    private CarMark mark;
 
-    private String model;
+    @Enumerated(EnumType.STRING)
+    private CarModel model;
 
     @Enumerated(EnumType.STRING)
     private CarBodyType type;

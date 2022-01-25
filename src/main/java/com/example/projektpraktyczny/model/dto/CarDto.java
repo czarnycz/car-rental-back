@@ -1,6 +1,8 @@
 package com.example.projektpraktyczny.model.dto;
 
 import com.example.projektpraktyczny.model.CarBodyType;
+import com.example.projektpraktyczny.model.CarMark;
+import com.example.projektpraktyczny.model.CarModel;
 import com.example.projektpraktyczny.model.Reservation;
 import lombok.*;
 
@@ -14,9 +16,9 @@ import javax.persistence.*;
 public class CarDto {
     private Long id;
 
-    private String mark;
+    private CarMark mark;
 
-    private String model;
+    private CarModel model;
 
     private CarBodyType type;
 }
